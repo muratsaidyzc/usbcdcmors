@@ -246,7 +246,6 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   int i = 0;
   uint32_t pressTime;
   int pressCounter;
