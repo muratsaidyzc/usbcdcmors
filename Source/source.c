@@ -61,7 +61,7 @@ static void MX_TIM6_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void name(){ // matches the short and long pushes with letters
+void name(){ 
 	int i=0;
 	while (i < 9) {
 	  if (strcmp(iteretor, morsecode[i]) == 0) {
