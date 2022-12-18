@@ -22,10 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "usbd_cdc_if.h"
-#include "string.h"
-#define dot  '.'
-#define dash '-'
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,6 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define dot  '.'
+#define dash '-'
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,9 +45,6 @@
 TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN PV */
-char *morsecode[]={"--","..","--",".-.","-","..-","-.--","--..","-.-."};
-char *name_surname[]={"A\n","I\n","M\n","R\n","T\n","U\n","Y\n","Z\n","C\n"};
-char iteretor[6];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,6 +57,7 @@ static void MX_TIM6_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+<<<<<<< Updated upstream
 void name(){ 
 	int i=0;
 	while (i < 9) {
@@ -73,6 +70,9 @@ void name(){
 	  i++;
 			}
 }
+=======
+
+>>>>>>> Stashed changes
 /* USER CODE END 0 */
 
 /**
@@ -184,7 +184,7 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 0;
+  htim6.Init.Prescaler = 65535;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 65535;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -224,7 +224,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : button_Pin printer_Pin */
   GPIO_InitStruct.Pin = button_Pin|printer_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -245,10 +245,36 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+char *morsecode[]={"--","..","--",".-.","-","..-","-.--","--..","-.-."};
+char *name_surname[]={"A","I","M","R","T","U","Y","Z","C"};
+char iterator[10];
+int i = 0;
+uint32_t pressTime;
+int pressCounter;
+
+void name(){
+	int x=0;
+	while (x < 9) {
+	  if (strcmp(iterator, morsecode[x]) == 0) {
+	    CDC_Transmit_FS(name_surname[x], strlen(name_surname[x]));
+	  }
+	  x++;
+	}
+}
+void clean(){
+	int y = 0;
+	while (y < 10) {
+	  iterator[y] = '\0';
+	  y++;
+	}
+		    }
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+<<<<<<< Updated upstream
   int i = 0;
   uint32_t pressTime;
   int pressCounter;
+=======
+>>>>>>> Stashed changes
   while (GPIO_Pin == button_Pin) {
     if (HAL_GPIO_ReadPin(button_GPIO_Port, button_Pin)) {
       (TIM6->CNT) = 0;
@@ -258,16 +284,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
       pressTime = (TIM6->CNT);
       HAL_GPIO_WritePin(red_GPIO_Port, red_Pin, 0);
       (TIM6->CNT) = 0;
-      while (pressTime > 60 && pressTime < 400) {
-        iteretor[i] = dot;
+      while (pressTime > 250 && pressTime < 500) {
+        iterator[i] = dot;
         i++;
       }
-      while (pressTime > 399) {
-        iteretor[i] = dash;
+      while (pressTime >= 500) {
+        iterator[i] = dash;
         i++;
       }
       while (i == 4 || pressCounter) {
         name();
+        clean();
         i = 0;
       }
     }
@@ -276,6 +303,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
     pressCounter = 1;
     while (i == 4 || pressCounter) {
       name();
+      clean();
       i = 0;
     }
   }
